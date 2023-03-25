@@ -6,7 +6,7 @@
 3. (省略可) `npm install`
 4. export-jp.sh を実行 `bash export-jp.sh`
 5. export.csv が作成できば OK
-6. commit/push して終わり コミットメッセージは #yyyy.mm.dd
+6. csv ファイルは[GoogleDrive](https://drive.google.com/drive/folders/1nyVzpklcN1d7q9Zh2PPQzQVl-tx7i4te?usp=share_link)に格納
 
 # Firestore Import Export
 

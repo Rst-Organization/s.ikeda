@@ -1,27 +1,35 @@
-const Fs  = require('fs');
-const data = require('../firestore-export.json');
-const obj = []
-
-for(const key in data){
-    const item = data[key]
-
-    for(const i in item){
-        obj.push({
-            id: i,
-            messages:item[i]["message"],
-            token:item[i]["token"]
-        })
-    }
-}
-
+const fs = require("fs");
+const JSONStream = require("JSONStream");
+const data = require("../firestore-export.json");
 
 const fileName = "import.json";
-const datas = JSON.stringify(obj, null, 2)
+const writeStream = fs.createWriteStream(fileName);
 
-Fs.writeFile(fileName,datas,(err)=>{
-    if(err){
-        console.error("error",err);
-    }else{
-        console.log("Done")
-    }
-})
+const stringifyStream = JSONStream.stringifyObject();
+
+stringifyStream.pipe(writeStream);
+
+for (const key in data) {
+  const item = data[key];
+
+  for (const i in item) {
+    const obj = {
+      id: i,
+      messages: item[i]["message"],
+      token: item[i]["token"],
+    };
+
+    // objを文字列に変換してストリームに書き込む
+    stringifyStream.write(JSON.stringify(obj));
+  }
+}
+
+stringifyStream.end();
+
+stringifyStream.on("end", () => {
+  console.log("Done");
+});
+
+writeStream.on("error", (err) => {
+  console.error("error", err);
+});

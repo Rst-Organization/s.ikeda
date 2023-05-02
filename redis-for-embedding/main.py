@@ -8,7 +8,7 @@ import pandas as pd
 import redis
 import tiktoken
 from openai.embeddings_utils import get_embedding, cosine_similarity
-from redis.commands.search.query import Query
+from redis.commands.search.query import Query, Filter
 from redis.commands.search.result import Result
 from redis.commands.search.field import VectorField, TextField
 
@@ -33,7 +33,7 @@ embedding_model_for_doc = "text-search-doc"
 # embedding_model_for_query = "デプロイしたモデルの名前" 
 embedding_model_for_query = "text-search-query"
 # embedding_encoding = "cl100k_base"
-embedding_encoding = "gpt2" # 今回使用するモデルは GPT-2/GPT-3 トークナイザーを使用する
+embedding_encoding = "gpt2"
 max_tokens = 2000  # 最大トークン数は 2046 のため少し余裕を持った最大値を設定する
 
 #%%
@@ -54,10 +54,11 @@ df["Embedding"] = df["Combined"].apply(lambda x: get_embedding(x, engine=embeddi
 df.to_csv("data/data_embeddings.csv")
 
 #%%
-df
+df["Embedding"][0]
+#%%
 #ベクトルの次元数を確認
 len(df["Embedding"][0])
-
+#%%
 embedding_dimension = 1536  # 出力ベクトル空間の次元数は1536
 #%%
 ##検索用関数
@@ -131,10 +132,11 @@ load_vectors(redis_conn, df)
 print("Index size: ", redis_conn.ft().info()['num_docs'])
 #%%
 # クエリにマッチするメニューを検索して返す (Redis 上)
-def search_reviews_redis(query, n=3, pprint=True, engine="text-search-query"):
+def search_reviews_redis(query, n=3, pprint=True, engine=embedding_model_for_query):
     q_vec = np.array(get_embedding(query, engine=engine)).astype(np.float32).tobytes()
     
     q = Query(f"*=>[KNN {n} @Embedding $vec_param AS vector_score]").sort_by("vector_score").paging(0,n).return_fields("vector_score", "Combined").return_fields("vector_score").dialect(2)
+    
     params_dict = {"vec_param": q_vec}
     ret_redis = redis_conn.ft().search(q, query_params = params_dict)
     
@@ -155,7 +157,7 @@ def search_reviews_redis(query, n=3, pprint=True, engine="text-search-query"):
             print("%s | %s\n" % (sim, com))
     return ret_df
 
-results_redis = search_reviews_redis("さっぱりしたお酒", n=3, engine=embedding_model_for_query)
+results_redis = search_reviews_redis("くたびれたサラリーマンが好むお酒")
 
 #%%
 results_redis

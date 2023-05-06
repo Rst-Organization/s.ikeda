@@ -17,6 +17,7 @@ embedding_dimension = 1536  # ada-002を使ったときのベクトル空間の�
 #データ読み込みと欠損の確認
 df = pd.read_csv("data/data.csv")
 df.isna().sum()
+
 # %%
 #質問と答えを合わせたCombined列を作成
 df["Combined"] = (
@@ -35,7 +36,7 @@ df["Embedding"][0]
 # %%
 len(df["Embedding"][0])
 # %%
-#pineconeのインデックス作成
+#pineconeのインデックスを作成する
 pinecone.init(api_key=pineconeKey, environment="us-west1-gcp-free")
 
 #%%
@@ -70,7 +71,7 @@ res = pinecone_index.query(
         [embedding], 
         top_k=3, 
         # filter={
-        #     "um1": {"$in": ["妊娠・出産"]}
+        #     "source": {"$in": ["妊娠・出産"]} #特定ワードをフィルターで入れる事もできる
         # },
         include_metadata=True
     )
@@ -83,7 +84,7 @@ for i in res["matches"]:
     score = i["score"]
     id = i["id"]
     text = i["metadata"]["text"]
-    source = i["metadata"]["Combined"]
+    source = i["metadata"]["source"]
 
     ansList.append(text)
     print(f"id: {id}")
@@ -102,9 +103,9 @@ response = openai.Completion.create(
     prompt=f"Please answer the question in Japanese, taking into account the following context. \
         Context: \
             Question: {q} \
-            Answer: {ansList[0]},{ansList[1]}",
+            Answer: {ansList[0]},{ansList[1]},{ansList[2]}",
     temperature=0,
-    max_tokens=400
+    max_tokens=500
 )
 print(response.choices[0]["text"])
 

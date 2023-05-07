@@ -8,7 +8,7 @@ from langchain.chat_models import ChatOpenAI
 from llama_index.prompts.prompts import RefinePrompt, QuestionAnswerPrompt
 from llama_index import download_loader
 
-os.environ["OPENAI_API_KEY"] = "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"
+os.environ["OPENAI_API_KEY"] = ""
 
 #%%
 # ログレベルの設定

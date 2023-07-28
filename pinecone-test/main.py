@@ -61,7 +61,7 @@ for i in df.index:
     )
 
 #%%
-q = "子供が生まれたらまずは何をすればいいですか？"
+q = "子供が生まれたらま何をすればずはいいですか？"
 # クエリ検索用のベクトルを生成
 embedding = get_embedding(q, engine=MODEL)
 

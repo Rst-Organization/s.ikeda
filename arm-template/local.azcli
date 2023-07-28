@@ -1,0 +1,19 @@
+az logout
+az login
+az account list -o table
+
+# Visual Studio Enterprise サブスクリプション - MPN(池田慎之輔)  AzureCloud   07ac3fb1-1af3-415d-a369-8bf0b10ee97e
+az account set -s 07ac3fb1-1af3-415d-a369-8bf0b10ee97e
+
+az account list -o table
+az group list -o table
+
+# 以下都度変更する
+RG=rg-hakuhoudou-test
+LOCATION=japaneast
+
+#リソースグループを作る
+az group create -n $RG -l $LOCATION
+
+# デプロイ
+az deployment group create -g $RG -f main.bicep -p local.task3626.main.parameters.test.json -c

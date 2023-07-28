@@ -1,0 +1,79 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "appName": {
+            "value": "tstkbgl2201"
+        },
+        "mySqlCpLoginName": {
+            "value": "tstkbgl2201Admin"
+        },
+        "mySqlCpLoginPassword": {
+            "value": null
+        },
+        "mySqlCpSkuName": {
+            "value": "GP_Gen5_2"
+        },
+        "mySqlCpStorageMB": {
+            "value": 5120
+        },
+        "mySqlCpStorageAutogrow": {
+            "value": "Enabled"
+        },
+        "mySqlAdminLoginName": {
+            "value": "tstkbgl2201Admin"
+        },
+        "mySqlAdminLoginPassword": {
+            "value": null
+        },
+        "mySqlAdminSkuName": {
+            "value": "GP_Gen5_2"
+        },
+        "mySqlAdminStorageMB": {
+            "value": 5120
+        },
+        "mySqlAdminStorageAutogrow": {
+            "value": "Enabled"
+        },
+        "firewallRuleIpAddresses": {
+            "value": [
+                {
+                    "name": "alterbooth",
+                    "ipAddress": "153.142.111.145"
+                }
+            ]
+        },
+        "dnsZoneName": {
+            "value": ""
+        },
+        "publicIPPrefixesNatGatewayCpPrefixLength": {
+            "value": 31
+        },
+        "appServiceCpSku": {
+            "value": "P1v2"
+        },
+        "appServiceAdminSku": {
+            "value": "P1v2"
+        },
+        "redisCacheSKU": {
+            "value": "Basic"
+        },
+        "redisCacheFamily": {
+            "value": "C"
+        },
+        "redisCacheCapacity": {
+            "value": 0
+        },
+        "redisVnet": {
+            "value": false
+        },
+        "actionGroupsProperties": {
+            "value": []
+        },
+        "wafPolicyRuleAllowIpAddresses": {
+            "value": [
+                "153.142.111.145"
+            ]
+        }
+    }
+}

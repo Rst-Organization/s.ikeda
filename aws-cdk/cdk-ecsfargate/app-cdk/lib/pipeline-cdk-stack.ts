@@ -53,7 +53,6 @@ export class PipelineCdkStack extends Stack {
         ],
       });
 
-      
     const unitTestOutput = new codepipeline.Artifact();
     pipeline.addStage({
       stageName: "Code-Quality-Testing",

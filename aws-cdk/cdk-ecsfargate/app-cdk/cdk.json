@@ -19,7 +19,7 @@
   "context": {
     "projectName": "cicd-sample",
     "stageName": "prod",
-    "githubOwnerName": "takayanagishinnosuke",
+    "githubOwnerName": "Rst-Organization",
     "githubRepositoryName": "s.ikeda",
     "codestarConnectionArn": "arn:aws:codestar-connections:ap-northeast-1:037355278352:connection/8369130a-be3b-41b7-a41e-aa5d48df895e",
     "githubBranchName": "main", 

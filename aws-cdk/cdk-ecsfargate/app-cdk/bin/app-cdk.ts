@@ -10,7 +10,7 @@ const projectName = app.node.tryGetContext('projectName');
 const stageName = app.node.tryGetContext('stageName');
 const githubOwnerName = app.node.tryGetContext('githubOwnerName');
 const githubRepositoryName = app.node.tryGetContext('githubRepositoryName');
-const githubBranchName = app.node.tryGetContext('githubRepositoryName');
+const githubBranchName = app.node.tryGetContext('githubBranchName');
 const codestarConnectionArn = app.node.tryGetContext('codestarConnectionArn');
 
 new AppCdkStack(app, 'AppCdkStack', {});

@@ -9,14 +9,11 @@ cdk.out
 
 oracleConect.sh
 lib/LambdaRdsStack.ts
-lib/PipelineStack.ts
 buildspec.yaml
-lambda/mysql/
 
 
 lib/TestEc2BStack.ts
 lib/TestEc2BRoute.ts
-lib/TestEc2Stack.ts
 lib/test.yaml
 lib/origin.yaml
 

@@ -1,38 +1,4 @@
-# 認証基盤環境CDK
-
-## 概要
-認証基盤環境のCDKデプロイ手順について記載します。
-
-## ディレクトリ概要
-```
-├── bin 
-│     └── auth.ts #CDKのエントリポイント
-├── lambda
-│     └── index.ts #サンプル用Lambdaコード
-├── lib
-│     ├── ApiGatewayStack.ts #APIGwを構築するStack
-│     ├── CloudFrontStack.ts #CloudFrontを構築するStack
-│     ├── CognitoStack.ts #Cognitoを構築するStack
-│     ├── DataBaseStack.ts #RDS(Oracle)を構築するStack
-│     ├── DynamoStack.ts #DynamoDBを構築するStack
-│     ├── LambdaStack.ts #計3つのLambdaを構築するStack。
-│     ├── NetworkStack.ts #VPC、TransitGatewayを構築するStack
-│     ├── RamStack.ts #他アカウントに対してTransitGw共有を構築するStack
-│     ├── RouteTableModifyStack.ts #TransitGwへのルーティングを変更するStack
-│     ├── resources
-│     │     ├── createCognitoTrigeerLambda.ts #Cognitoのトリガー用Lambdaを作成
-│     │     ├── createGetDbLambda.ts #DBデータ取得用Lambdaを作成
-│     │     └── createPutDbLambda.ts #DBデータ登録用Lambdaを作成
-├── test
-├── cdk.json # CDKの設定ファイル
-├── cdk.context.json # Cashファイル
-├── package.json
-├── package-lock.json
-├── README.md
-├── tsconfig.json
-├── rds-orcl-lyer.zip #Lambdaのカスタムレイヤー
-└── jest.config.js
-```
+# Auth CDK
 
 ## Usage Process
 https://docs.aws.amazon.com/ja_jp/cdk/v2/guide/cli.html
@@ -45,7 +11,6 @@ https://docs.aws.amazon.com/ja_jp/cdk/v2/guide/cli.html
 * `npx cdk diff`  - compare deployed stack with current state
 * `npx cdk synth`  - emits the synthesized CloudFormation template
 * `npx cdk destroy`     - destroy the stack
-
 
 
 ## デプロイ手順

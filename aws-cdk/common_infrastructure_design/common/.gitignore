@@ -10,7 +10,7 @@ cdk.out
 lib/PipelineStack.ts
 lib/CloudFrontStack.ts
 lib/PocFargateStack.ts
-lib/TestEc2BStack.ts
+
 
 build_docker.yml
 Dockerfile

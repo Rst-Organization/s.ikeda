@@ -1,38 +1,5 @@
 # アプリ環境CDK
 
-## 概要
-アプリケーション環境のCDKデプロイ手順について記載します。
-
-## ディレクトリ概要
-```
-├── bin 
-│     └── app.ts #CDKのエントリポイント
-├── lib
-│     ├── AppBaseStack.ts #RDSとECSを構築するStack
-│     ├── EcrStack.ts #ECRレポジトリを構築するStack
-│     ├── PipelineResourceStack.ts #CI/CDパイプラインに必要なリソースを構築するStack
-│     ├── PipelineStack.ts #Codeパイプラインとイベントブリッジを構築するStack
-│     ├── TransitGwAttachmentStack.ts #TransitGatewayへのルートを設定するStack
-│     ├── VpcStack.ts #VPCを構築するStack
-│     ├── resources
-│     │     ├── createArtifactBucket.ts.ts #ArtifactBucket作成
-│     │     ├── createArtifactKey.ts #KMS暗号化キー作成
-│     │     ├── createCodeBuildRole.ts #CodeBuild用IAMロール作成
-│     │     ├── createCodePipelineRole.tss #CodePipeline用IAMロール作成
-│     │     ├── createDataBase.ts #RDS for Oraclの作成
-│     │     ├── createEcsfargate.ts #ECS Fargate作成
-│     │     ├── createEventBridge.ts #EventBridge作成
-│     │     └── createPipeline.ts #CodePipeLine作成
-├── test
-├── cdk.json # CDKの設定ファイル
-├── cdk.context.json # Cashファイル
-├── package.json
-├── package-lock.json
-├── README.md
-├── tsconfig.json
-└── jest.config.js
-```
-
 ## Usage Process
 https://docs.aws.amazon.com/ja_jp/cdk/v2/guide/cli.html
 
@@ -126,27 +93,8 @@ devopsデレクトリに移動します。
 cd ../devops
 ```
 `cdk.json`の`context`内環境変数を確認します。
-```
-...
-  "context": {
-    "projectName": "stadiumapp-common", //プロジェクト名
-    "devOpsAccount": "216019509931", //デプロイ先アカウント
-    "deployRegion": "ap-northeast-1", //デプロイ先リージョン
-    ...
-```
-`devops/bin/devops.ts`の`CodeCommitStack`ではCodeCommitレポジトリを作成します。
-repositoryNameは作成するレポジトリ名になるので適宜変更してください。
 
-```typescript
-const CodeCommitCdkStack = new CodeCommitStack(app, `${PROJECT_NAME}-CodeCommitStack`, {
-    projectName: PROJECT_NAME,
-    repositoryName: "<レポジトリ名>",
-    env: {
-        account: DEVOPS_ACCOUNT,
-        region: DEPLOY_REGION,
-    }
-});
-```
+`devops/bin/devops.ts`の`CodeCommitStack`ではCodeCommitレポジトリを作成します。
 
 レポジトリのARNが出力されますので、こちらもメモしておきます。
 

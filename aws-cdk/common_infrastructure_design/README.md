@@ -18,22 +18,26 @@ IACは全て`AWS CDK (Typescript)`で記載しています。
 
 ### 事前準備
 
-事前準備として以下のツールがインストール、設定が完了している必要があります。
+事前準備として以下のツールがインストールされている必要があります。
 - [AWS CLI](https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/cli-chap-install.html)
 - [AWS CDK](https://docs.aws.amazon.com/ja_jp/cdk/latest/guide/getting_started.html)
 - [CLIの認証設定](https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/cli-configure-files.html)
 - Node.js 実行環境 (v18以上で動作確認済)
 
 ### 手順
-1. [初期アカウントへのセキリュティ系サービスの有効化 ※まだ有効化されていない場合のみ](./docs/00_account_setup.md)
 
-2. [CDKのセットアップとインフラ構成](./docs/01_cdk_setup.md)
-
-3. 1と2が完了している場合は、各環境の構築手順を参照ください。
 - [認証基盤環境のCDK手順](./auth/README.md)
 - [アプリ環境のCDK手順](./common/README.md)
 - [DEVOPS環境のCDK手順](./devops/README.md)
 - [コンソールからのパイプライン作成方法](./docs/02_pipeline_console_setup.md)
 
-## 備考
-[Teamsチャンネル](https://teams.microsoft.com/l/team/19%3agKZPAG6v7giiELSPM2tb4giMzAoLeA75stjGesfM8aQ1%40thread.tacv2/conversations?groupId=f9f90e67-a190-4063-a160-3fc5e105b0f8&tenantId=1297339d-8ad9-484b-9a60-a39845f4ffb5)
+### 構築環境
+
+auth
+![auth](./docs/images/auth_env_diagram2.png)
+
+common
+![common](./docs/images/app_env_diagram.png)
+
+### 備考
+[ローカルパッケージのCDKバージョンを上げるには](https://kdnakt.hatenablog.com/entry/2019/02/06/080000)

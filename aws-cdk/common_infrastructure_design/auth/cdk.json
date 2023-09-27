@@ -19,9 +19,9 @@
   "context": {
     "projectName": "auth",
     "deploymentStage": "prod",
-    "deployAccount": "618024034594",
+    "deployAccount": "",
     "defaultRegion": "ap-northeast-1",
-    "targetAwsAccount": ["967185805673"],
+    "targetAwsAccount": [""],
     "targetCidrBlocks": ["192.169.0.0/16"],
     "@aws-cdk/aws-lambda:recognizeLayerVersion": true,
     "@aws-cdk/core:checkSecretUsage": true,

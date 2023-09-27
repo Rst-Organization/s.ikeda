@@ -7,16 +7,13 @@ import * as codebuild from 'aws-cdk-lib/aws-codebuild';
 import * as codepipeline_actions from 'aws-cdk-lib/aws-codepipeline-actions';
 import * as ecr from 'aws-cdk-lib/aws-ecr';
 import * as iam from 'aws-cdk-lib/aws-iam';
-import * as ecsPatterns from 'aws-cdk-lib/aws-ecs-patterns';
 
 
 interface ConsumerProps extends StackProps {
   ecrRepository: ecr.Repository;
-  testAppFargateService: ecsPatterns.ApplicationLoadBalancedFargateService;
-  prodAppFargateService: ecsPatterns.ApplicationLoadBalancedFargateService;
 }
 
-export class PipelineCdkStack extends cdk.Stack {
+export class PipelineStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: ConsumerProps) {
     super(scope, id, props);
 
@@ -31,21 +28,6 @@ export class PipelineCdkStack extends cdk.Stack {
       pipelineName: 'CICD_Pipeline',
       crossAccountKeys: false,
     });
-
-    //CodeBuild
-    const codeQualityBuild = new codebuild.PipelineProject(
-      this,
-      "Code Quality",
-      {
-        environment: {
-          buildImage: codebuild.LinuxBuildImage.STANDARD_5_0,
-          privileged: true,
-          computeType: codebuild.ComputeType.LARGE
-        },
-        //buildspec_test.ymlを参照するように設定
-        buildSpec: codebuild.BuildSpec.fromSourceFilename('buildspec_test.yml')
-      }
-    );
     
     //ECRへのビルドパイプライン用のプロジェクトを作成
     const dockerBuildProject = new codebuild.PipelineProject(this, 'DockerBuildProject', {
@@ -60,7 +42,7 @@ export class PipelineCdkStack extends cdk.Stack {
         computeType: codebuild.ComputeType.LARGE
       },
       //buildspec_docker.ymlを参照するように設定
-      buildSpec: codebuild.BuildSpec.fromSourceFilename('buildspec_docker.yml'),
+      buildSpec: codebuild.BuildSpec.fromSourceFilename('build_docker.yml'),
     });
     
     //ECRへプッシュする権限を許可するポリシーを作成
@@ -87,7 +69,6 @@ export class PipelineCdkStack extends cdk.Stack {
     dockerBuildProject.addToRolePolicy(dockerBuildRolePolicy);
 
     const sourceOutput = new codepipeline.Artifact();
-    const unitTestOutput = new codepipeline.Artifact();
     const dockerBuildOutput = new codepipeline.Artifact();
     
     //ソース管理レポジトリにステージとアクションを追加
@@ -99,19 +80,6 @@ export class PipelineCdkStack extends cdk.Stack {
           repository: sourceRepo,
           output: sourceOutput,
           branch: "main",
-        }),
-      ],
-    });
-
-    //コード品質テストのステージとアクションを追加
-    pipeline.addStage({
-      stageName: "Code-Quality-Testing",
-      actions: [
-        new codepipeline_actions.CodeBuildAction({
-          actionName: "Unit-Test",
-          project: codeQualityBuild,
-          input: sourceOutput,
-          outputs: [unitTestOutput],
         }),
       ],
     });
@@ -129,38 +97,12 @@ export class PipelineCdkStack extends cdk.Stack {
       ],
     });
 
-    //ECSへのデプロイのステージとアクションを追加
-    // pipeline.addStage({
-    //   stageName: 'Deploy-Test',
-    //   actions: [
-    //     new codepipeline_actions.EcsDeployAction({
-    //       actionName: 'deployECS',
-    //       service: props.testAppFargateService.service,
-    //       input: dockerBuildOutput
-    //     }),
-    //   ]
-    // });
 
-    // // 本番環境へのデプロイのステージとアクションを追加(手動承認を挟む)
-    // pipeline.addStage({
-    //   stageName: 'Deploy-Production',
-    //   actions: [
-    //     new codepipeline_actions.ManualApprovalAction({
-    //       actionName: 'Approve-Prod-Deploy',
-    //       runOrder: 1
-    //     }),
-    //     new codepipeline_actions.EcsDeployAction({
-    //       actionName: 'deployECS',
-    //       service: props.prodAppFargateService.service,
-    //       input: dockerBuildOutput,
-    //       runOrder: 2
-    //     })
-    //   ]
-    // });
-    
-    new CfnOutput(this, 'CodeCommitRepositoryUrl', {
-       value: sourceRepo.repositoryCloneUrlHttp 
-      });
-      
-  }
+
+
+
+
+
+
+  };
 }

@@ -1,0 +1,37 @@
+{
+    "name": "<コードビルドプロジェクト名>",
+    "description": "build project",
+    "source": {
+        "type": "CODEPIPELINE",
+        "buildspec": "buildspec_docker.yml"
+    },
+    "artifacts": {
+        "type": "CODEPIPELINE"
+    },
+    "environment": {
+        "type": "LINUX_CONTAINER",
+        "image": "aws/codebuild/standard:7.0",
+        "computeType": "BUILD_GENERAL1_LARGE",
+        "privilegedMode": true,
+        "environmentVariables": [
+            {
+                "name": "AWS_DEFAULT_REGION",
+                "value": "ap-northeast-1"
+            },
+            {
+                "name": "IMAGE_REPO_URI",
+                "value": "<ECRレポジトリのURI>"
+            },
+            {
+                "name": "IMAGE_TAG",
+                "value": "latest"
+            },
+            {
+                "name": "CONTAINER_NAME",
+                "value": "<稼働中のコンテナ名>"
+            }
+        ]
+    },
+    "serviceRole": "<codebuildのサービスロールARN>",
+    "encryptionKey": "<KMS暗号化キーのARN>"
+}

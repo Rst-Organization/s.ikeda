@@ -1,0 +1,96 @@
+{
+    "pipeline": {
+        "name": "prod-account-pipeline", 
+        "roleArn": "<CodePipelineのサービスロールARN>", 
+        "artifactStore": {
+            "type": "S3", 
+            "location": "<アーティファクトバケットの名前が入ります>", 
+            "encryptionKey": {
+                "id": "<KMSキーのARN>",
+                "type": "KMS"
+            }
+        }, 
+        "stages": [
+            {
+                "name": "Source", 
+                "actions": [
+                    {
+                        "name": "Source", 
+                        "actionTypeId": {
+                            "category": "Source", 
+                            "owner": "AWS", 
+                            "provider": "CodeCommit", 
+                            "version": "1"
+                        }, 
+                        "runOrder": 1, 
+                        "configuration": {
+                            "PollForSourceChanges": "false",
+                            "RepositoryName": "<CodeCommitレポジトリの名前>",
+                            "BranchName": "<処理を実行するブランチ名 例:main>"
+                        },
+                        "outputArtifacts": [
+                            {
+                                "name": "SourceCode"
+                            }
+                        ],
+                        "roleArn": "<DEVOPS環境で作成したAssumeRole用のIAMロールARN>"
+                    }
+                ]
+            },
+            {
+                "name": "Build",
+                "actions": [
+                    {
+                        "name": "Build",
+                        "actionTypeId": {
+                            "category": "Build",
+                            "owner": "AWS",
+                            "provider": "CodeBuild",
+                            "version": "1"
+                        },
+                        "runOrder": 1,
+                        "configuration": {
+                            "ProjectName": "<先程作ったコードビルドプロジェクト名>"
+                        },
+                        "inputArtifacts": [
+                            {
+                                "name": "SourceCode"
+                            }
+                        ],
+                        "outputArtifacts": [
+                            {
+                                "name": "ImageDefinitions"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "name": "Deploy",
+                "actions": [
+                    {
+                        "name": "Deploy",
+                        "actionTypeId": {
+                            "category": "Deploy",
+                            "owner": "AWS",
+                            "provider": "ECS",
+                            "version": "1"
+                        },
+                        "runOrder": 1,
+                        "configuration": {
+                            "ClusterName": "<稼働中のECSクラスタ名>",
+                            "ServiceName": "<稼働中のECSサービス名>",
+                            "FileName": "imagedefinitions.json"
+                        },
+                        "inputArtifacts": [
+                            {
+                                "name": "ImageDefinitions"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ], 
+        "version": 1
+    }
+}

@@ -1,0 +1,19 @@
+*.js
+!jest.config.js
+*.d.ts
+node_modules
+
+# CDK asset staging directory
+.cdk.staging
+cdk.out
+
+lib/PipelineStack.ts
+lib/CloudFrontStack.ts
+lib/PocFargateStack.ts
+lib/TestEc2BStack.ts
+
+build_docker.yml
+Dockerfile
+index.html
+POC-REFERENCE.md
+

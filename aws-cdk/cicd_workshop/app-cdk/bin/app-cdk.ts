@@ -17,8 +17,10 @@ const prodAppCdkStack = new AppCdkStack(app, 'prod', {
     ecrRepository: ecrCdkStack.repository
 });
 
-const pipelineCdkStack = new PipelineCdkStack(app, 'pipeline-stack', {
+const pipelineCdkStack = new PipelineCdkStack(app, 'pipeline-stack', { 
     ecrRepository: ecrCdkStack.repository,
     testAppFargateService: testAppCdkStack.fargateService,
-    prodAppFargateService: prodAppCdkStack.fargateService,
+    greenTargetGroup: prodAppCdkStack.greenTargetGroup,
+    greenLoadBalancerListener: prodAppCdkStack.greenLoadBalancerListener,
+    prodAppFargateService: prodAppCdkStack.fargateService
 });

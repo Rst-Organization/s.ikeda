@@ -99,6 +99,7 @@ export class AppCdkStack extends Stack {
       interval:Duration.seconds(11)
     });
 
+    //登録解除の遅延 (ストリーミング間隔)
     this.fargateService.targetGroup.setAttribute('deregistration_delay.timeout_seconds', '5');
     
   }

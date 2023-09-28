@@ -11,8 +11,6 @@ import * as ecsPatterns from 'aws-cdk-lib/aws-ecs-patterns';
 import * as elbv2 from "aws-cdk-lib/aws-elasticloadbalancingv2"
 
 
-
-
 interface ConsumerProps extends StackProps {
   ecrRepository: ecr.Repository;
   testAppFargateService: ecsPatterns.ApplicationLoadBalancedFargateService;
@@ -47,7 +45,6 @@ export class PipelineCdkStack extends Stack {
       
       const dockerBuildProject = new codebuild.PipelineProject(this, 'DockerBuildProject', {
         environmentVariables: {
-          'IMAGE_TAG': { value: 'latest' },
           'IMAGE_REPO_URI': {value: props.ecrRepository.repositoryUri },
           'AWS_DEFAULT_REGION': {value: process.env.CDK_DEFAULT_REGION },
         },
@@ -94,7 +91,8 @@ export class PipelineCdkStack extends Stack {
             branch: "main",
           }),
         ],
-    });    
+    });
+
     pipeline.addStage({
       stageName: 'Code-Quality-Testing',
         actions: [
@@ -106,6 +104,7 @@ export class PipelineCdkStack extends Stack {
           }),
         ],
     });
+
     pipeline.addStage({
       stageName: 'Docker-Push-ECR',
       actions: [
@@ -117,16 +116,18 @@ export class PipelineCdkStack extends Stack {
         }),
       ],
     });
+
     pipeline.addStage({
       stageName: 'Deploy-Test',
       actions: [
         new codepipeline_actions.EcsDeployAction({
           actionName: 'deployECS',
           service: props.testAppFargateService.service,
-          input: dockerBuildOutput
+          input: dockerBuildOutput,
         }),
       ]
-    });  
+    });
+
     const ecsCodeDeployApp = new codedeploy.EcsApplication(this, "my-app", {
       applicationName: 'my-app'
     });
@@ -141,6 +142,7 @@ export class PipelineCdkStack extends Stack {
       deploymentConfig: codedeploy.EcsDeploymentConfig.LINEAR_10PERCENT_EVERY_1MINUTES,
       application: ecsCodeDeployApp,
     });
+
     pipeline.addStage({
       stageName: 'ECS-Deploy-Prod',
       actions: [
@@ -151,14 +153,21 @@ export class PipelineCdkStack extends Stack {
         new codepipeline_actions.CodeDeployEcsDeployAction({
           actionName: 'BlueGreen-DeployECS',
           deploymentGroup: prodEcsDeploymentGroup,
-          appSpecTemplateInput: sourceOutput,
-          taskDefinitionTemplateInput: sourceOutput,
+          appSpecTemplateInput: dockerBuildOutput,
+          taskDefinitionTemplateInput: dockerBuildOutput,
+          containerImageInputs: [{
+            input: dockerBuildOutput,
+            taskDefinitionPlaceholder: 'IMAGE_NAME',
+          }],
           runOrder: 2
         })
       ]
     });
+
     new CfnOutput(this, 'CodeCommitRepositoryUrl', { 
       value: sourceRepo.repositoryCloneUrlHttp 
     });
+
+
   }
 }

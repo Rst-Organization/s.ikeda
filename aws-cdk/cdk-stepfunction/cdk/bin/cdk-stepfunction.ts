@@ -5,9 +5,9 @@ import { StepfunctionsRestApiStack } from '../lib/cdk-stepfunction-stack';
 import { LambdaRestApiStack } from '../lib/lambdaChain';
 
 const app = new cdk.App();
-const channelAccessToken = process.env.CHANNEL_ACCESS_TOKEN || '';
-const channelSecret = process.env.CHANNEL_SECRET || '';
-const openaiApiKey = process.env.OPENAI_API_KEY || '';
+const channelAccessToken = '';
+const channelSecret = '';
+const openaiApiKey = '';
 
 new StepfunctionsRestApiStack(app, 'CdkStepfunctionStack', {
   env: {

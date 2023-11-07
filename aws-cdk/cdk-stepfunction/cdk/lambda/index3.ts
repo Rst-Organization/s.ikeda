@@ -64,6 +64,7 @@ export const handler = async (event: any = {}): Promise<any> => {
       ReceiptHandle: event.Records[0].receiptHandle,
     };
     await sqs.deleteMessage(params2).promise();
+    await handleRecommendSQS(JSON.parse(object).userId);
     return;
   } catch (error) {
     console.error(error);
@@ -103,4 +104,21 @@ async function aichat(content: string) {
     return response;
   }
   return '...';
+}
+
+//レコメンドSQSにメッセージを送信
+async function handleRecommendSQS(userId: string): Promise<any> {
+  const sqs = new AWS.SQS();
+  const sqsParams = {
+    MessageBody: JSON.stringify({
+      userId: userId,
+      delete: false,
+    }),
+    QueueUrl: process.env.RECOMMEND_SQS_URL!,
+    MessageGroupId: userId, //グループIDを指定
+    MessageDeduplicationId: userId, //重複IDを指定
+  };
+  await sqs.sendMessage(sqsParams).promise();
+  console.log('レコメンドSQSにメッセージを送信しました。');
+  return;
 }

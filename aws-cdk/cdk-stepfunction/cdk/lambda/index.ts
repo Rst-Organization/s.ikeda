@@ -8,6 +8,7 @@ import {
 
 import * as AWS from 'aws-sdk';
 import OpenAI from 'openai';
+import { v4 as uuidv4 } from 'uuid';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -31,8 +32,17 @@ export const handler = async (event: any = {}): Promise<any> => {
       const messageEvent = lineEvent as MessageEvent;
 
       if (messageEvent.message.type === 'text') {
+        if (messageEvent.message.text === '本当に申し訳ございませんでした。') {
+          const userId = messageEvent.source.userId || '';
+          await deleteSQSMessage(userId);
+          return;
+        }
+
         const res = await aichat(messageEvent.message.text);
         await handleTextMessage(messageEvent, res);
+
+        const userId = messageEvent.source.userId || '';
+        await handleSQS(userId);
         return;
       } else if (messageEvent.message.type === 'image') {
         await handleImageMessage(messageEvent);
@@ -116,4 +126,38 @@ async function aichat(message: string) {
     return response;
   }
   return '...';
+}
+
+// レコメンドSQSに削除フラグを混ぜてメッセージ送信
+async function deleteSQSMessage(userId: string) {
+  const sqs = new AWS.SQS();
+  const sqsParams = {
+    MessageBody: JSON.stringify({
+      userId: userId,
+      delete: true,
+    }),
+    QueueUrl: process.env.RECOMMEND_SQS_URL!,
+    MessageGroupId: userId, //グループIDを指定
+    MessageDeduplicationId: uuidv4(), //重複IDをユニークにする
+  };
+  await sqs.sendMessage(sqsParams).promise();
+  console.log('レコメンドSQSに謝罪メッセージを送信しました。');
+  return;
+}
+
+//レコメンドSQSにメッセージを送信
+async function handleSQS(userId: string): Promise<any> {
+  const sqs = new AWS.SQS();
+  const sqsParams = {
+    MessageBody: JSON.stringify({
+      userId: userId,
+      delete: false,
+    }),
+    QueueUrl: process.env.RECOMMEND_SQS_URL!,
+    MessageGroupId: userId, //グループIDを指定
+    MessageDeduplicationId: userId, //重複IDを指定
+  };
+  await sqs.sendMessage(sqsParams).promise();
+  console.log('レコメンドSQSにメッセージを送信しました。');
+  return;
 }

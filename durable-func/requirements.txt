@@ -10,8 +10,11 @@ azure-common
 azure-core
 azure-functions
 azure-functions-durable
+azure-storage-blob
 certifi
+cffi
 charset-normalizer
+cryptography
 Deprecated
 distro
 exceptiongroup
@@ -25,8 +28,9 @@ idna
 isodate
 line-bot-sdk
 multidict
-openai==0.28.1
+openai==1.2.3
 orderedmultidict
+pycparser
 pydantic
 pydantic_core
 python-dateutil

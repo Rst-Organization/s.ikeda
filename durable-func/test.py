@@ -3,7 +3,7 @@ import openai
 import os
 
 
-openai.api_key= "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"
+openai.api_key= "<APIKEY>"
 
 #%%
 def create_image(NUMBER_OF_IMAGES: int, prompt: str,):
